@@ -5,45 +5,31 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
-
 @RestController
-@RequestMapping("/photon")
+@RequestMapping("/photon/webhook")
 public class PhotonWebhookController {
 
-    private final Map<String, Integer> salas = new HashMap<>();
-
-    @PostMapping("/webhook")
-    public ResponseEntity<Void> recibirEvento(@RequestBody Map<String, Object> evento) {
-        String tipo = (String) evento.get("Type");
-        String sala = (String) evento.get("GameId");
-        switch (tipo) {
-            case "GameCreated":
-                salas.put(sala, 0);
-                System.out.println("Sala creada : " + sala);
-                break;
-            case "PlayerJoined":
-                salas.put(sala, salas.getOrDefault(sala, 0) + 1);
-                System.out.println("Jugador entró a: " + sala);
-                break;
-            case "PlayerLeft":
-                salas.put(sala, Math.max(0, salas.getOrDefault(sala, 1) - 1));
-                System.out.println("Jugador salió de: " + sala);
-                break;
-            case "GameClosed":
-                salas.remove(sala);
-                System.out.println("Sala cerrada: " + sala);
-                break;
-        }
-        return ResponseEntity.ok().build();
+    @PostMapping("/Create")
+    public ResponseEntity<String> onRoomCreate(@RequestBody String payload) {
+        System.out.println("Room created: " + payload);
+        return ResponseEntity.ok("{\"ResultCode\": 0, \"Data\": {}}");
     }
 
-    @GetMapping("/stats")
-    public Map<String, Object> obtenerEstadisticas(){
-        int total=salas.values().stream().mapToInt(Integer::intValue).sum();
-        return Map.of(
-                "salas", salas,
-                "totalUsuarios", total
-        );
+    @PostMapping("/Join")
+    public ResponseEntity<String> onPlayerJoin(@RequestBody String payload) {
+        System.out.println("Player joined: " + payload);
+        return ResponseEntity.ok("{\"ResultCode\": 0, \"Data\": {}}");
     }
 
+    @PostMapping("/Leave")
+    public ResponseEntity<String> onPlayerLeave(@RequestBody String payload) {
+        System.out.println("Player left: " + payload);
+        return ResponseEntity.ok("{\"ResultCode\": 0, \"Data\": {}}");
+    }
+
+    @PostMapping("/Close")
+    public ResponseEntity<String> onRoomClose(@RequestBody String payload) {
+        System.out.println("Room closed: " + payload);
+        return ResponseEntity.ok("{\"ResultCode\": 0, \"Data\": {}}");
+    }
 }
