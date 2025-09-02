@@ -16,7 +16,6 @@ public class PhotonWebhookController {
     public ResponseEntity<Void> recibirEvento(@RequestBody Map<String, Object> evento) {
         String tipo = (String) evento.get("Type");
         String sala = (String) evento.get("GameId");
-
         switch (tipo) {
             case "GameCreated":
                 salas.put(sala, 0);
