@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
-COPY --from=builder /app/target/simulador-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=builder /app/target/simulator-service-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
